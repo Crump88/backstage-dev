@@ -18,6 +18,17 @@ spec:
   owner: guests
   system: examples
   providesApis: [example-grpc-api]
+  ---
+# https://backstage.io/docs/features/software-catalog/descriptor-format/#kind-resource
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: website-db
+  descriptor: Stores website data
+spec:
+  type: database
+  owner: guests
+  system: examples
 ---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
 apiVersion: backstage.io/v1alpha1
