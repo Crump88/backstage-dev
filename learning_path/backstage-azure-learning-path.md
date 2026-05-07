@@ -27,11 +27,11 @@ This path takes you from Backstage consumer to deployer/developer in 10 focused 
 > Understand Backstage's mental model before touching code
 
 **Tasks**
-- [ ] Read the official "What is Backstage?" overview and the Software Catalog architecture docs in full
-- [ ] Study the three pillars: Software Catalog, TechDocs, and the Plugin system
-- [ ] Watch the official KubeCon/BackstageCon talk: "Backstage and the Power of the Developer Portal"
-- [ ] Diagram (on paper) how entities relate: `Component → System → Domain → Resource → API`
-- [ ] Set up a private GitHub/ADO repo to track your notes and YAML experiments
+- ✅ Read the official "What is Backstage?" overview and the Software Catalog architecture docs in full
+- ✅ Study the three pillars: Software Catalog, TechDocs, and the Plugin system
+- ✅ Watch the official KubeCon/BackstageCon talk: "Backstage and the Power of the Developer Portal"
+- ✅ Diagram (on paper) how entities relate: `Component → System → Domain → Resource → API`
+- ✅ Set up a private GitHub/ADO repo to track your notes and YAML experiments
 
 **Resources**
 - [Backstage documentation home](https://backstage.io/docs)
