@@ -2,6 +2,33 @@ import { createApp } from '@backstage/frontend-defaults';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import { navModule } from './modules/nav';
 
+import { SignInPageBlueprint } from '@backstage/plugin-app-react';
+import { SignInPage } from '@backstage/core-components';
+import { microsoftAuthApiRef } from '@backstage/core-plugin-api';
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
+
+const signInPage = SignInPageBlueprint.make({
+  params: {
+    loader: async () => props =>
+      (
+        <SignInPage
+          {...props}
+          provider={{
+            id: 'microsoft-auth-provider',
+            title: 'Microsoft',
+            message: 'Sign in using Microsoft Entra',
+            apiRef: microsoftAuthApiRef,
+          }}
+        />
+      ),
+  },
+});
+
 export default createApp({
-  features: [catalogPlugin, navModule],
+  features: [catalogPlugin, navModule,
+    createFrontendModule({
+      pluginId: 'app',
+      extensions: [signInPage],
+    }),
+  ],
 });
