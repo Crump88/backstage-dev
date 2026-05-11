@@ -97,6 +97,7 @@ auth:
           resolvers:
             # See https://backstage.io/docs/auth/microsoft/provider#resolvers for more resolvers
             - resolver: userIdMatchingUserEntityAnnotation
+            - resolver: emailMatchingUserEntityProfileEmail
     # See https://backstage.io/docs/auth/guest/provider
     guest: {}
   # see https://backstage.io/docs/ai/mcp-actions#client-id-metadata-documents
@@ -116,6 +117,20 @@ scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
 
 catalog:
+  providers:
+    microsoftGraphOrg:
+      default:
+        tenantId: "9c8d7196-e4cf-4c75-9312-3b2fc26f41e6"
+        user:
+          filter: id eq '945052cb-1dbb-4821-8a6a-93a4db3e0e5a'
+        # group:
+        #   filter: >
+        #     securityEnabled eq false
+        #     and mailEnabled eq true
+        #     and groupTypes/any(c:c+eq+'Unified')
+        schedule:
+          frequency: PT1H
+          timeout: PT50M
   import:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration
