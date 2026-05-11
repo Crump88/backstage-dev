@@ -84,8 +84,19 @@ techdocs:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
 auth:
+  environment: development
   # see https://backstage.io/docs/auth/ to learn about auth providers
   providers:
+    microsoft:
+      development:
+        clientId: 1822f123-21ac-48d6-a640-b44edc240617
+        clientSecret: ${AZURE_CLIENT_SECRET}
+        tenantId: 9c8d7196-e4cf-4c75-9312-3b2fc26f41e6
+        domainHint: 9c8d7196-e4cf-4c75-9312-3b2fc26f41e6
+        signIn:
+          resolvers:
+            # See https://backstage.io/docs/auth/microsoft/provider#resolvers for more resolvers
+            - resolver: userIdMatchingUserEntityAnnotation
     # See https://backstage.io/docs/auth/guest/provider
     guest: {}
   # see https://backstage.io/docs/ai/mcp-actions#client-id-metadata-documents
