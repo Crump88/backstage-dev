@@ -1,4 +1,4 @@
-## Key Learnings
+# Key Learnings
 
 ## Setting up authentication
 
