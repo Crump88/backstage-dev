@@ -70,7 +70,7 @@ integrations:
           clientId: Iv23liYvgxW3Db5FcDgm
           clientSecret: ${GH_AUTH_ORG_CLIENT_SECRET}
           webhookSecret: ${GH_AUTH_ORG_WEBHOOK_SECRET}
-          privateKey: ${GH_AUTH_ORG1_PRIVATE_KEY}
+          privateKey: ${GH_AUTH_ORG_PRIVATE_KEY}
       # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
       # about setting up the GitHub integration here: https://backstage.io/docs/integrations/github/locations#configuration
       token: ${GITHUB_TOKEN}
