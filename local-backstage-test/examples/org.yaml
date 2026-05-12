@@ -7,17 +7,17 @@ metadata:
 spec:
   memberOf: [guests]
 ---
-apiVersion: backstage.io/v1alpha1
-kind: User
-metadata:
-  name: brian-crump
-  annotations:
-    graph.microsoft.com/user-id: 945052cb-1dbb-4821-8a6a-93a4db3e0e5a
-spec:
-  profile:
-    displayName: Brian Crump
-    email: 'brian.crump_3cloudsolutions.com#EXT#@infra3cloudoutlook.onmicrosoft.com'
-  memberOf: [guests]
+# apiVersion: backstage.io/v1alpha1
+# kind: User
+# metadata:
+#   name: brian-crump
+#   annotations:
+#     graph.microsoft.com/user-id: 945052cb-1dbb-4821-8a6a-93a4db3e0e5a
+# spec:
+#   profile:
+#     displayName: Brian Crump
+#     email: 'brian.crump_3cloudsolutions.com#EXT#@infra3cloudoutlook.onmicrosoft.com'
+#   memberOf: [guests]
 ---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-group
 apiVersion: backstage.io/v1alpha1
