@@ -1,0 +1,83 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
+kind: Template
+metadata:
+  name: example-terraform-template
+  title: Terraform Module Template
+  description: Creates a tokenized Terraform repository from a GitHub starter repo
+spec:
+  owner: user:guest
+  type: service
+
+  parameters:
+    - title: Repository Details
+      required:
+        - repoName
+      properties:
+        repoName:
+          title: Repository Name
+          type: string
+          description: Name of the new repository to create in bc-backstage-dev
+          pattern: '^[a-zA-Z0-9._-]+$'
+          ui:autofocus: true
+    - title: Terraform Variables
+      required:
+        - resourceGroupName
+        - location
+        - storagePrefix
+        - owner
+        - environment
+      properties:
+        resourceGroupName:
+          title: Resource Group Name
+          type: string
+          description: Terraform value for ${{ values.resourceGroupName }}
+        location:
+          title: Location
+          type: string
+          description: Terraform value for ${{ values.location }}
+          default: eastus
+        storagePrefix:
+          title: Storage Prefix
+          type: string
+          description: Terraform value for ${{ values.storagePrefix }}
+        owner:
+          title: Owner
+          type: string
+          description: Terraform value for ${{ values.owner }}
+        environment:
+          title: Environment
+          type: string
+          description: Terraform value for ${{ values.environment }}
+          enum:
+            - dev
+            - test
+            - prod
+
+  steps:
+    - id: fetch-base
+      name: Fetch and Tokenize Template
+      action: fetch:template
+      input:
+        url: https://github.com/bc-backstage-dev/terraform-template.git
+        values:
+          resourceGroupName: ${{ parameters.resourceGroupName }}
+          location: ${{ parameters.location }}
+          storagePrefix: ${{ parameters.storagePrefix }}
+          owner: ${{ parameters.owner }}
+          environment: ${{ parameters.environment }}
+
+    - id: publish
+      name: Publish to GitHub
+      action: publish:github
+      input:
+        allowedHosts:
+          - github.com
+        repoUrl: github.com?owner=bc-backstage-dev&repo=${{ parameters.repoName }}
+        defaultBranch: main
+        description: Terraform module for ${{ parameters.environment }} created from Backstage template
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['publish'].output.remoteUrl }}
