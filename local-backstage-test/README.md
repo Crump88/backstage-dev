@@ -13,3 +13,10 @@ To start the app, run:
 yarn install
 yarn start
 ```
+
+## Production container and AKS deployment
+
+Production container build and AKS Helm deployment assets are available in:
+
+- `Dockerfile`
+- `deploy/helm/backstage/README.md`

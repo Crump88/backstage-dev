@@ -1,6 +1,6 @@
 app:
   # Should be the same as backend.baseUrl when using the `app-backend` plugin.
-  baseUrl: http://localhost:7007
+  baseUrl: ${APP_BASE_URL}
 
 backend:
   # Note that the baseUrl should be the URL that the browser and other clients
@@ -8,10 +8,15 @@ backend:
   # reachable not just from within the backend host, but from all of your
   # callers. When its value is "http://localhost:7007", it's strictly private
   # and can't be reached by others.
-  baseUrl: http://localhost:7007
+  baseUrl: ${BACKEND_BASE_URL}
   # The listener can also be expressed as a single <host>:<port> string. In this case we bind to
   # all interfaces, the most permissive setting. The right value depends on your specific deployment.
   listen: ':7007'
+
+  cors:
+    origin: ${CORS_ORIGIN}
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
 
   # config options: https://node-postgres.com/apis/client
   database:
@@ -29,8 +34,18 @@ backend:
       #     $file: <file-path>/ca/server.crt
 
 auth:
+  environment: production
   providers:
-    guest: {}
+    microsoft:
+      production:
+        clientId: ${MICROSOFT_CLIENT_ID}
+        clientSecret: ${MICROSOFT_CLIENT_SECRET}
+        tenantId: ${MICROSOFT_TENANT_ID}
+        domainHint: ${MICROSOFT_TENANT_ID}
+        signIn:
+          resolvers:
+            - resolver: userIdMatchingUserEntityAnnotation
+            - resolver: emailMatchingUserEntityProfileEmail
 
 catalog:
   # Overrides the default list locations from app-config.yaml as these contain example data.

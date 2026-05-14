@@ -1,0 +1,53 @@
+name_prefix = "bc"
+environment = "test"
+location    = "eastus2"
+
+kubernetes_version      = "1.36"
+aks_private_cluster_enabled = false
+aks_api_server_authorized_ip_ranges = []
+aks_sku_tier            = "Standard"
+aks_admin_group_object_ids = ["945052cb-1dbb-4821-8a6a-93a4db3e0e5a"]
+aks_node_vm_size        = "Standard_B2s"
+aks_node_count          = 2
+aks_user_node_pool_name = "userpool"
+aks_user_node_vm_size   = "Standard_B2s"
+aks_user_node_count     = 1
+outbound_type           = "loadBalancer"
+
+vnet_cidr            = "10.30.0.0/16"
+aks_subnet_cidr      = "10.30.1.0/24"
+postgres_subnet_cidr = "10.30.2.0/24"
+gateway_subnet_cidr  = "10.30.3.0/24"
+
+postgres_sku_name       = "B_Standard_B2s"
+postgres_version        = "18"
+postgres_public_network_access_enabled = true
+postgres_storage_mb     = 32768
+postgres_database_name  = "backstage"
+postgres_admin_username = "pgadmin"
+postgres_active_directory_auth_enabled = true
+postgres_password_auth_enabled         = false
+postgres_entra_tenant_id               = null
+postgres_entra_admin_object_id         = "945052cb-1dbb-4821-8a6a-93a4db3e0e5a"
+postgres_entra_admin_principal_name    = "pg-admins"
+postgres_entra_admin_principal_type    = "Group"
+
+storage_account_tier             = "Standard"
+storage_account_replication_type = "LRS"
+storage_container_name           = "backstage-assets"
+acr_sku                          = "Basic"
+acr_admin_enabled                = false
+
+enable_key_vault_for_backstage = true
+existing_key_vault_id           = null
+key_vault_name                  = null
+
+backstage_namespace            = "backstage"
+backstage_service_account_name = "backstage-sa"
+
+enable_gateway_for_containers = true
+gateway_extension_type        = "microsoft.alb"
+
+tags = {
+  owner = "platform-team"
+}

@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "backstage.fullname" . }}
+  labels:
+    {{- include "backstage.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "backstage.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        {{- include "backstage.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "backstage.serviceAccountName" . }}
+      containers:
+        - name: backstage
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+              name: http
+          envFrom:
+            - configMapRef:
+                name: {{ include "backstage.fullname" . }}-config
+            {{- if .Values.keyVaultCSI.enabled }}
+            - secretRef:
+                name: {{ .Values.secrets.name }}
+            {{- else if .Values.secrets.existingSecretName }}
+            - secretRef:
+                name: {{ .Values.secrets.existingSecretName }}
+            {{- else if .Values.secrets.create }}
+            - secretRef:
+                name: {{ .Values.secrets.name }}
+            {{- end }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readinessProbe.path }}
+              port: http
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.livenessProbe.path }}
+              port: http
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.keyVaultCSI.enabled }}
+          volumeMounts:
+            - name: kv-secrets-store
+              mountPath: /mnt/secrets-store
+              readOnly: true
+          {{- end }}
+      {{- if .Values.keyVaultCSI.enabled }}
+      volumes:
+        - name: kv-secrets-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ .Values.keyVaultCSI.secretProviderClassName }}
+      {{- end }}

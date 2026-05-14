@@ -1,0 +1,92 @@
+replicaCount: 2
+
+image:
+  repository: REPLACE_WITH_ACR_LOGIN_SERVER/backstage
+  tag: latest
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  name: backstage-sa
+  annotations:
+    azure.workload.identity/client-id: REPLACE_WITH_BACKSTAGE_WORKLOAD_IDENTITY_CLIENT_ID
+
+podLabels:
+  azure.workload.identity/use: "true"
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 7007
+
+config:
+  NODE_ENV: production
+  APP_BASE_URL: http://backstage.example.com
+  BACKEND_BASE_URL: http://backstage.example.com
+  CORS_ORIGIN: http://backstage.example.com
+  POSTGRES_HOST: REPLACE_WITH_POSTGRES_FQDN
+  POSTGRES_PORT: "5432"
+  POSTGRES_USER: REPLACE_WITH_POSTGRES_USERNAME
+  POSTGRES_DATABASE: backstage
+  MICROSOFT_TENANT_ID: REPLACE_WITH_ENTRA_TENANT_ID
+  AZURE_CLIENT_ID: REPLACE_WITH_BACKSTAGE_WORKLOAD_IDENTITY_CLIENT_ID
+  AZURE_TENANT_ID: REPLACE_WITH_ENTRA_TENANT_ID
+
+secrets:
+  name: backstage-secrets
+  existingSecretName: ""
+  create: false
+  data:
+    POSTGRES_PASSWORD: ""
+    MICROSOFT_CLIENT_ID: ""
+    MICROSOFT_CLIENT_SECRET: ""
+    GITHUB_TOKEN: ""
+    GH_AUTH_ORG_CLIENT_SECRET: ""
+    GH_AUTH_ORG_WEBHOOK_SECRET: ""
+    GH_AUTH_ORG_PRIVATE_KEY: ""
+    BACKEND_SECRET: ""
+
+keyVaultCSI:
+  enabled: false
+  secretProviderClassName: backstage-kv-secrets
+  clientId: REPLACE_WITH_BACKSTAGE_WORKLOAD_IDENTITY_CLIENT_ID
+  keyVaultName: REPLACE_WITH_KEY_VAULT_NAME
+  tenantId: REPLACE_WITH_ENTRA_TENANT_ID
+  secretObjects:
+    - key: POSTGRES_PASSWORD
+      objectName: postgres-password
+    - key: MICROSOFT_CLIENT_ID
+      objectName: microsoft-client-id
+    - key: MICROSOFT_CLIENT_SECRET
+      objectName: microsoft-client-secret
+    - key: GITHUB_TOKEN
+      objectName: github-token
+    - key: GH_AUTH_ORG_CLIENT_SECRET
+      objectName: gh-auth-org-client-secret
+    - key: GH_AUTH_ORG_WEBHOOK_SECRET
+      objectName: gh-auth-org-webhook-secret
+    - key: GH_AUTH_ORG_PRIVATE_KEY
+      objectName: gh-auth-org-private-key
+    - key: BACKEND_SECRET
+      objectName: backstage-backend-secret
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+readinessProbe:
+  path: /api/catalog/entities
+  initialDelaySeconds: 20
+  periodSeconds: 10
+
+livenessProbe:
+  path: /api/catalog/entities
+  initialDelaySeconds: 45
+  periodSeconds: 20
