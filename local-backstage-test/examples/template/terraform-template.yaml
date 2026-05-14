@@ -71,8 +71,6 @@ spec:
       name: Publish to GitHub
       action: publish:github
       input:
-        allowedHosts:
-          - github.com
         repoUrl: github.com?owner=bc-backstage-dev&repo=${{ parameters.repoName }}
         defaultBranch: main
         description: Terraform module for ${{ parameters.environment }} created from Backstage template
