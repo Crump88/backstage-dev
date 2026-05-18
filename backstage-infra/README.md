@@ -7,7 +7,7 @@ This folder contains a modular Terraform implementation for deploying Azure infr
 - Azure Storage Account + private blob container
 - AKS workload identity for Backstage service account
 - Azure Key Vault for Backstage secrets (optional, or reuse existing vault)
-- Azure Gateway for Containers (AKS extension + traffic controller)
+- Azure Gateway for Containers prerequisites for ALB-managed deployment (delegated subnet + ALB controller managed identity + RBAC)
 
 ## Module Layout
 
@@ -17,7 +17,7 @@ This folder contains a modular Terraform implementation for deploying Azure infr
 - `modules/storage`: storage account + blob container
 - `modules/workload-identity`: user-assigned managed identity + federated identity credential + blob RBAC
 - `modules/key-vault`: key vault with RBAC authorization enabled
-- `modules/gateway-for-containers`: AKS extension and traffic controller
+- `modules/gateway-for-containers`: ALB controller workload identity and required Azure RBAC for managed-by-ALB provisioning
 
 ## Quick Start
 
@@ -57,6 +57,8 @@ Useful outputs for AKS deployment manifests:
 - `postgres_server_fqdn`
 - `postgres_database_name`
 - `acr_login_server`
+- `gateway_for_containers_alb_controller_identity_client_id`
+- `gateway_for_containers_subnet_id`
 
 ## Public vs Private AKS
 
@@ -70,4 +72,5 @@ When public, optionally restrict ingress to API server with `aks_api_server_auth
 ## Notes
 
 - PostgreSQL admin password is generated and marked sensitive in outputs.
-- Gateway for Containers API versions can change; keep `azapi` provider and API version in `modules/gateway-for-containers/main.tf` aligned with Azure documentation for your target region/subscription.
+- Managed-by-ALB requires deploying the ALB controller in AKS (Helm), then applying an `ApplicationLoadBalancer` custom resource in Kubernetes.
+- The optional `enable_ingress_application_gateway` variable controls AKS `ingress_application_gateway` (AGIC add-on). Keep this disabled when following ALB-managed Gateway for Containers.

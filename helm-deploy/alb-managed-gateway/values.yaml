@@ -1,0 +1,5 @@
+alb:
+  name: alb-backstage
+  infrastructureNamespace: alb-infra
+  createInfrastructureNamespace: true
+  associationSubnetId: "/subscriptions/18fc0dae-23c8-403e-8e83-b8db9be1892c/resourceGroups/bc-testing-rg-tf/providers/Microsoft.Network/virtualNetworks/vnet-bc-test/subnets/snet-agfc"

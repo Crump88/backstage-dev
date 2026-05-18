@@ -1,7 +1,7 @@
 replicaCount: 2
 
 image:
-  repository: REPLACE_WITH_ACR_LOGIN_SERVER/backstage
+  repository: acrbctesto95qnm.azurecr.io/backstage
   tag: latest
   pullPolicy: IfNotPresent
 
@@ -12,7 +12,7 @@ serviceAccount:
   create: true
   name: backstage-sa
   annotations:
-    azure.workload.identity/client-id: REPLACE_WITH_BACKSTAGE_WORKLOAD_IDENTITY_CLIENT_ID
+    azure.workload.identity/client-id: 0557ac87-7409-4cc4-a80a-c7415be47f06
 
 podLabels:
   azure.workload.identity/use: "true"
@@ -27,20 +27,19 @@ config:
   APP_BASE_URL: http://backstage.example.com
   BACKEND_BASE_URL: http://backstage.example.com
   CORS_ORIGIN: http://backstage.example.com
-  POSTGRES_HOST: REPLACE_WITH_POSTGRES_FQDN
+  POSTGRES_HOST: psql-bc-test.postgres.database.azure.com
   POSTGRES_PORT: "5432"
   POSTGRES_USER: REPLACE_WITH_POSTGRES_USERNAME
   POSTGRES_DATABASE: backstage
-  MICROSOFT_TENANT_ID: REPLACE_WITH_ENTRA_TENANT_ID
-  AZURE_CLIENT_ID: REPLACE_WITH_BACKSTAGE_WORKLOAD_IDENTITY_CLIENT_ID
-  AZURE_TENANT_ID: REPLACE_WITH_ENTRA_TENANT_ID
+  MICROSOFT_TENANT_ID: 9c8d7196-e4cf-4c75-9312-3b2fc26f41e6
+  AZURE_CLIENT_ID: 0557ac87-7409-4cc4-a80a-c7415be47f06
+  AZURE_TENANT_ID: 9c8d7196-e4cf-4c75-9312-3b2fc26f41e6
 
 secrets:
   name: backstage-secrets
   existingSecretName: ""
   create: false
   data:
-    POSTGRES_PASSWORD: ""
     MICROSOFT_CLIENT_ID: ""
     MICROSOFT_CLIENT_SECRET: ""
     GITHUB_TOKEN: ""
@@ -52,12 +51,10 @@ secrets:
 keyVaultCSI:
   enabled: false
   secretProviderClassName: backstage-kv-secrets
-  clientId: REPLACE_WITH_BACKSTAGE_WORKLOAD_IDENTITY_CLIENT_ID
+  clientId: 0557ac87-7409-4cc4-a80a-c7415be47f06
   keyVaultName: REPLACE_WITH_KEY_VAULT_NAME
-  tenantId: REPLACE_WITH_ENTRA_TENANT_ID
+  tenantId: 9c8d7196-e4cf-4c75-9312-3b2fc26f41e6
   secretObjects:
-    - key: POSTGRES_PASSWORD
-      objectName: postgres-password
     - key: MICROSOFT_CLIENT_ID
       objectName: microsoft-client-id
     - key: MICROSOFT_CLIENT_SECRET

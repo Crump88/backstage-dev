@@ -10,6 +10,13 @@ resource "azurerm_private_dns_zone" "this" {
   name                = "${var.name_prefix}.postgres.database.azure.com"
   resource_group_name = var.resource_group_name
   tags                = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags["Creator-AutoApplied"],
+      tags["createdOnDate"],
+    ]
+  }
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "this" {
@@ -21,6 +28,13 @@ resource "azurerm_private_dns_zone_virtual_network_link" "this" {
   virtual_network_id    = var.vnet_id
   registration_enabled  = false
   tags                  = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags["Creator-AutoApplied"],
+      tags["createdOnDate"],
+    ]
+  }
 }
 
 resource "random_password" "admin" {
@@ -43,6 +57,7 @@ resource "azurerm_postgresql_flexible_server" "this" {
   storage_mb                    = var.storage_mb
   sku_name                      = var.sku_name
   backup_retention_days         = 7
+  zone                          = 2
 
   authentication {
     active_directory_auth_enabled = var.active_directory_auth_enabled
@@ -52,7 +67,16 @@ resource "azurerm_postgresql_flexible_server" "this" {
 
   depends_on = [azurerm_private_dns_zone_virtual_network_link.this]
   tags       = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags["Creator-AutoApplied"],
+      tags["createdOnDate"],
+    ]
+  }
 }
+
+
 
 resource "azurerm_postgresql_flexible_server_active_directory_administrator" "entra_admin" {
   count = var.active_directory_auth_enabled && var.entra_admin_object_id != "" && var.entra_admin_principal_name != "" ? 1 : 0

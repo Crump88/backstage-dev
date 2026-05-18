@@ -1,0 +1,6 @@
+{{- if .Values.alb.createInfrastructureNamespace }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.alb.infrastructureNamespace }}
+{{- end }}

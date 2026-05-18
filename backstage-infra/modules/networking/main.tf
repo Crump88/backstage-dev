@@ -2,6 +2,13 @@ resource "azurerm_resource_group" "this" {
   name     = "bc-testing-rg-tf"
   location = var.location
   tags     = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags["Creator-AutoApplied"],
+      tags["createdOnDate"],
+    ]
+  }
 }
 
 resource "azurerm_virtual_network" "this" {
@@ -10,6 +17,13 @@ resource "azurerm_virtual_network" "this" {
   resource_group_name = azurerm_resource_group.this.name
   address_space       = [var.vnet_cidr]
   tags                = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags["Creator-AutoApplied"],
+      tags["createdOnDate"],
+    ]
+  }
 }
 
 resource "azurerm_subnet" "aks" {

@@ -274,10 +274,16 @@ variable "enable_gateway_for_containers" {
   default     = true
 }
 
-variable "gateway_extension_type" {
-  description = "AKS extension type for Gateway for Containers."
+variable "gateway_controller_namespace" {
+  description = "Namespace where ALB controller runs in AKS."
   type        = string
-  default     = "microsoft.alb"
+  default     = "azure-alb-system"
+}
+
+variable "enable_ingress_application_gateway" {
+  description = "Enable AKS ingress_application_gateway add-on block (AGIC). Keep false for ALB-controller managed Gateway for Containers."
+  type        = bool
+  default     = false
 }
 
 variable "tags" {

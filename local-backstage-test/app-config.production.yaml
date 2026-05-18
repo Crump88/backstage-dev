@@ -25,7 +25,7 @@ backend:
       host: ${POSTGRES_HOST}
       port: ${POSTGRES_PORT}
       user: ${POSTGRES_USER}
-      password: ${POSTGRES_PASSWORD}
+    type: azure
       # https://node-postgres.com/features/ssl
       # you can set the sslmode configuration option via the `PGSSLMODE` environment variable
       # see https://www.postgresql.org/docs/current/libpq-ssl.html Table 33.1. SSL Mode Descriptions (e.g. require)
@@ -51,6 +51,25 @@ catalog:
   # Overrides the default list locations from app-config.yaml as these contain example data.
   # See https://backstage.io/docs/features/software-catalog/#adding-components-to-the-catalog for more details
   # on how to get entities into the catalog.
+  providers:
+    microsoftGraphOrg:
+      default:
+        tenantId: ${MICROSOFT_TENANT_ID}
+        user:
+          filter: id eq '945052cb-1dbb-4821-8a6a-93a4db3e0e5a'
+        group:
+          filter: >
+            securityEnabled eq false
+            and mailEnabled eq true
+            and groupTypes/any(c:c+eq+'Unified')
+        schedule:
+          frequency: PT1H
+          timeout: PT50M
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow: [Component, System, API, Resource, Location, Users]
   locations:
     # Local example data, replace this with your production config, these are intended for demo use only.
     # File locations are relative to the backend process, typically in a deployed context, such as in a Docker container, this will be the root

@@ -3,5 +3,3 @@ provider "azurerm" {
 }
 
 provider "azuread" {}
-
-provider "azapi" {}

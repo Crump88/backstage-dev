@@ -29,8 +29,8 @@ postgres_active_directory_auth_enabled = true
 postgres_password_auth_enabled         = false
 postgres_entra_tenant_id               = null
 postgres_entra_admin_object_id         = "945052cb-1dbb-4821-8a6a-93a4db3e0e5a"
-postgres_entra_admin_principal_name    = "pg-admins"
-postgres_entra_admin_principal_type    = "Group"
+postgres_entra_admin_principal_name    = "brian.crump_3cloudsolutions.com#EXT#@infra3cloudoutlook.onmicro"
+postgres_entra_admin_principal_type    = "User"
 
 storage_account_tier             = "Standard"
 storage_account_replication_type = "LRS"
@@ -46,7 +46,8 @@ backstage_namespace            = "backstage"
 backstage_service_account_name = "backstage-sa"
 
 enable_gateway_for_containers = true
-gateway_extension_type        = "microsoft.alb"
+gateway_controller_namespace  = "azure-alb-system"
+enable_ingress_application_gateway = false
 
 tags = {
   owner = "platform-team"

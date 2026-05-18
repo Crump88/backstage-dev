@@ -60,6 +60,21 @@ variable "subnet_id" {
   type = string
 }
 
+variable "enable_ingress_application_gateway" {
+  type    = bool
+  default = false
+}
+
+variable "ingress_application_gateway_subnet_id" {
+  type    = string
+  default = null
+
+  validation {
+    condition     = var.enable_ingress_application_gateway == false || var.ingress_application_gateway_subnet_id != null
+    error_message = "ingress_application_gateway_subnet_id must be set when enable_ingress_application_gateway is true."
+  }
+}
+
 variable "tags" {
   type    = map(string)
   default = {}

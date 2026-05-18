@@ -5,6 +5,13 @@ resource "azurerm_user_assigned_identity" "backstage" {
   location            = var.location
   resource_group_name = var.resource_group_name
   tags                = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags["Creator-AutoApplied"],
+      tags["createdOnDate"],
+    ]
+  }
 }
 
 resource "azurerm_federated_identity_credential" "backstage" {
@@ -23,8 +30,6 @@ resource "azurerm_role_assignment" "blob_data_contributor" {
 }
 
 resource "azurerm_role_assignment" "key_vault_secrets_user" {
-  count = var.key_vault_id != null ? 1 : 0
-
   scope                = var.key_vault_id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_user_assigned_identity.backstage.principal_id

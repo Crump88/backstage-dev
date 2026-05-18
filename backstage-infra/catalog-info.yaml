@@ -1,0 +1,110 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-infra
+  title: Backstage Infrastructure
+  description: Terraform modules and configurations for deploying Backstage on Azure Kubernetes Service (AKS) with supporting cloud resources
+  labels:
+    team: platform
+    type: infrastructure
+    tool: terraform
+  annotations:
+    github.com/project-slug: 3cloud/backstage-dev
+    backstage.io/source-location: url:https://github.com/3cloud/backstage-dev/tree/main/backstage-infra
+spec:
+  type: infrastructure
+  owner: platform-team
+  lifecycle: production
+  system: backstage-platform
+  providesApis:
+    - azure-acr-api
+    - azure-aks-api
+  consumesApis: []
+  dependsOn:
+    - resource:azure-subscription
+    - resource:azure-resource-group
+  attributes:
+    terraform_version: "~> 1.0"
+    cloud_provider: azure
+    deployment_method: terraform
+---
+# Parent system for the Backstage platform
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: backstage-platform
+  title: Backstage Platform
+  description: Complete Backstage deployment platform on Azure
+  labels:
+    team: platform
+spec:
+  owner: platform-team
+---
+# ACR (Container Registry) Module Component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-infra-acr-module
+  title: ACR Module
+  description: Terraform module for Azure Container Registry (ACR) provisioning
+spec:
+  type: infrastructure
+  lifecycle: production
+  owner: platform-team
+  system: backstage-platform
+  attributes:
+    module_path: modules/acr
+---
+# AKS (Kubernetes) Module Component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-infra-aks-module
+  title: AKS Module
+  description: Terraform module for Azure Kubernetes Service (AKS) cluster provisioning
+spec:
+  type: infrastructure
+  lifecycle: production
+  owner: platform-team
+  system: backstage-platform
+  attributes:
+    module_path: modules/aks
+---
+# PostgreSQL Database Module Component
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: backstage-postgres
+  title: Backstage PostgreSQL Database
+  description: PostgreSQL database for Backstage persistence layer
+spec:
+  type: database
+  lifecycle: production
+  owner: platform-team
+  system: backstage-platform
+---
+# Key Vault Resource
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: backstage-keyvault
+  title: Backstage Key Vault
+  description: Azure Key Vault for storing secrets and certificates
+spec:
+  type: key-management
+  lifecycle: production
+  owner: platform-team
+  system: backstage-platform
+---
+# Networking Resource
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: backstage-networking
+  title: Backstage Virtual Network
+  description: Azure Virtual Network and subnet configuration for Backstage
+spec:
+  type: network
+  lifecycle: production
+  owner: platform-team
+  system: backstage-platform

@@ -12,6 +12,13 @@ resource "azurerm_storage_account" "this" {
   account_replication_type = var.replication_type
   min_tls_version          = "TLS1_2"
   tags                     = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags["Creator-AutoApplied"],
+      tags["createdOnDate"],
+    ]
+  }
 }
 
 resource "azurerm_storage_container" "backstage" {

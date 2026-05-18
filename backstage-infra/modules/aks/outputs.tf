@@ -17,3 +17,7 @@ output "cluster_principal_id" {
 output "kubelet_object_id" {
   value = azurerm_kubernetes_cluster.this.kubelet_identity[0].object_id
 }
+
+output "node_resource_group_id" {
+  value = azurerm_kubernetes_cluster.this.node_resource_group_id
+}

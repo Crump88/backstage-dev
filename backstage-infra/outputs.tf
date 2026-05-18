@@ -10,6 +10,10 @@ output "aks_cluster_id" {
   value = module.aks.cluster_id
 }
 
+output "aks_node_resource_group_id" {
+  value = module.aks.node_resource_group_id
+}
+
 output "aks_oidc_issuer_url" {
   value = module.aks.oidc_issuer_url
 }
@@ -50,6 +54,14 @@ output "backstage_key_vault_name" {
   value = local.backstage_key_vault_id != null ? split("/", local.backstage_key_vault_id)[8] : null
 }
 
-output "gateway_for_containers_traffic_controller_id" {
-  value = module.gateway_for_containers.traffic_controller_id
+output "gateway_for_containers_alb_controller_identity_client_id" {
+  value = module.gateway_for_containers.alb_controller_identity_client_id
+}
+
+output "gateway_for_containers_alb_controller_identity_principal_id" {
+  value = module.gateway_for_containers.alb_controller_identity_principal_id
+}
+
+output "gateway_for_containers_subnet_id" {
+  value = module.networking.gateway_subnet_id
 }

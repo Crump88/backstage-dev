@@ -1,0 +1,6 @@
+apiVersion: v2
+name: alb-managed-gateway
+description: Deploys Application Gateway for Containers resources managed by ALB Controller
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

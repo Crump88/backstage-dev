@@ -34,6 +34,8 @@ module "aks" {
   user_node_count                 = var.aks_user_node_count
   outbound_type                   = var.outbound_type
   subnet_id                       = module.networking.aks_subnet_id
+  enable_ingress_application_gateway     = var.enable_ingress_application_gateway
+  ingress_application_gateway_subnet_id  = module.networking.gateway_subnet_id
   tags                            = local.common_tags
 }
 
@@ -90,7 +92,6 @@ resource "azurerm_role_assignment" "aks_acr_pull" {
 }
 
 module "key_vault" {
-  count  = var.enable_key_vault_for_backstage && var.existing_key_vault_id == null ? 1 : 0
   source = "./modules/key-vault"
 
   name_prefix          = local.base_name
@@ -101,9 +102,7 @@ module "key_vault" {
 }
 
 resource "azurerm_role_assignment" "current_principal_key_vault_admin" {
-  count = local.backstage_key_vault_id != null ? 1 : 0
-
-  scope                = local.backstage_key_vault_id
+  scope                = module.key_vault.id
   role_definition_name = "Key Vault Administrator"
   principal_id         = data.azurerm_client_config.current.object_id
 }
@@ -118,23 +117,27 @@ module "workload_identity" {
   service_account_name = var.backstage_service_account_name
   oidc_issuer_url      = module.aks.oidc_issuer_url
   storage_account_id   = module.storage.storage_account_id
-  key_vault_id         = local.backstage_key_vault_id
+  key_vault_id         = module.key_vault.id
   tags                 = local.common_tags
 }
 
 module "gateway_for_containers" {
   source = "./modules/gateway-for-containers"
 
-  enable                 = var.enable_gateway_for_containers
-  name_prefix            = local.base_name
-  location               = var.location
-  resource_group_name    = module.networking.resource_group_name
-  resource_group_id      = module.networking.resource_group_id
-  gateway_subnet_id      = module.networking.gateway_subnet_id
-  aks_cluster_id         = module.aks.cluster_id
-  gateway_extension_type = var.gateway_extension_type
-  cluster_principal_id   = module.aks.cluster_principal_id
-  tags                   = local.common_tags
+  enable                     = var.enable_gateway_for_containers
+  name_prefix                = local.base_name
+  location                   = var.location
+  resource_group_name        = module.networking.resource_group_name
+  gateway_subnet_id          = module.networking.gateway_subnet_id
+  oidc_issuer_url            = module.aks.oidc_issuer_url
+  aks_node_resource_group_id = module.aks.node_resource_group_id
+  controller_namespace       = var.gateway_controller_namespace
+  tags                       = local.common_tags
 
   depends_on = [module.aks]
+}
+
+import {
+  to = module.postgres.azurerm_postgresql_flexible_server_active_directory_administrator.entra_admin[0]
+  id = "/subscriptions/18fc0dae-23c8-403e-8e83-b8db9be1892c/resourceGroups/bc-testing-rg-tf/providers/Microsoft.DBforPostgreSQL/flexibleServers/psql-bc-test/administrators/945052cb-1dbb-4821-8a6a-93a4db3e0e5a"
 }

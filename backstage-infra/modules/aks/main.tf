@@ -28,6 +28,12 @@ resource "azurerm_kubernetes_cluster" "this" {
     vnet_subnet_id = var.subnet_id
     type           = "VirtualMachineScaleSets"
     max_pods       = 50
+
+    upgrade_settings {
+      drain_timeout_in_minutes      = 0
+      max_surge                     = "10%"
+      node_soak_duration_in_minutes = 0
+    }
   }
 
   identity {
@@ -41,7 +47,22 @@ resource "azurerm_kubernetes_cluster" "this" {
     outbound_type     = var.outbound_type
   }
 
+  dynamic "ingress_application_gateway" {
+    for_each = var.enable_ingress_application_gateway ? [1] : []
+
+    content {
+      subnet_id = var.ingress_application_gateway_subnet_id
+    }
+  }
+
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags["Creator-AutoApplied"],
+      tags["createdOnDate"],
+    ]
+  }
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "user" {
@@ -59,5 +80,25 @@ resource "azurerm_kubernetes_cluster_node_pool" "user" {
     workload = "applications"
   }
 
+  upgrade_settings {
+    drain_timeout_in_minutes      = 0
+    max_surge                     = "10%"
+    node_soak_duration_in_minutes = 0
+  }
+
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags["Creator-AutoApplied"],
+      tags["createdOnDate"],
+    ]
+  }
+}
+
+resource "azurerm_role_assignment" "aks_admin_group" {
+  for_each             = toset(var.admin_group_object_ids)
+  scope                = azurerm_kubernetes_cluster.this.id
+  role_definition_name = "Azure Kubernetes Service RBAC Cluster Admin"
+  principal_id         = each.value
 }

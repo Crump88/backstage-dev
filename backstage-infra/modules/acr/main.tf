@@ -11,4 +11,11 @@ resource "azurerm_container_registry" "this" {
   sku                 = var.sku
   admin_enabled       = var.admin_enabled
   tags                = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags["Creator-AutoApplied"],
+      tags["createdOnDate"],
+    ]
+  }
 }

@@ -1,0 +1,8 @@
+apiVersion: alb.networking.azure.io/v1
+kind: ApplicationLoadBalancer
+metadata:
+  name: {{ .Values.alb.name }}
+  namespace: {{ .Values.alb.infrastructureNamespace }}
+spec:
+  associations:
+    - {{ required "Set alb.associationSubnetId to the delegated Gateway for Containers subnet ID." .Values.alb.associationSubnetId | quote }}
