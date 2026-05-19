@@ -24,6 +24,26 @@ backend.add(import('@backstage/plugin-catalog-backend-module-msgraph'));
 
 - Validate Client/Server versions. A mismatch of these will lead to errors/unexpected output for common psql commands.
 - Make your account the 
+- The app-config definition for postgres in a container is extremely specific. The environment variables will be pulled from the helm chart values on deploy.
+  - Specifically, type must be azure, tokenCredential must specificy only clientId (not tenant or secret). This forces it to use the workload identity in Kubernetes (or workload identity on a different compute platform)
+```yaml
+  database:
+    client: pg
+    pluginDivisionMode: schema
+    ensureExists: false
+    ensureSchemaExists: true
+    connection:
+      type: azure
+      tokenCredential:
+        tokenRenewableOffsetTime: 5 minutes
+        clientId: ${AZURE_CLIENT_ID}
+      host: ${POSTGRES_HOST}
+      port: ${POSTGRES_PORT}
+      database: ${POSTGRES_DATABASE}
+      user: ${POSTGRES_USER}
+      ssl:
+        rejectUnauthorized: true
+```
 
 ## Adding plugins
 

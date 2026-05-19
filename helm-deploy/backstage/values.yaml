@@ -2,7 +2,7 @@ replicaCount: 2
 
 image:
   repository: acrbctesto95qnm.azurecr.io/backstage
-  tag: no-postgres
+  tag: latest
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -16,7 +16,7 @@ serviceAccount:
   create: true
   name: backstage-sa
   annotations:
-    azure.workload.identity/client-id: 1822f123-21ac-48d6-a640-b44edc240617 #0557ac87-7409-4cc4-a80a-c7415be47f06 - this is the value for the service account. removed for testing with app reg
+    azure.workload.identity/client-id: 0557ac87-7409-4cc4-a80a-c7415be47f06
 
 podLabels:
   azure.workload.identity/use: "true"
@@ -36,12 +36,14 @@ gatewayApi:
 
 config:
   NODE_ENV: production
-  APP_BASE_URL: http://esd2gvbbajheg6ee.fz59.alb.azure.com
-  BACKEND_BASE_URL: http://esd2gvbbajheg6ee.fz59.alb.azure.com
-  CORS_ORIGIN: http://esd2gvbbajheg6ee.fz59.alb.azure.com
+  APP_BASE_URL: https://esd2gvbbajheg6ee.fz59.alb.azure.com
+  BACKEND_BASE_URL: https://esd2gvbbajheg6ee.fz59.alb.azure.com
+  CORS_ORIGIN: https://esd2gvbbajheg6ee.fz59.alb.azure.com
   POSTGRES_HOST: psql-bc-test.postgres.database.azure.com
   POSTGRES_PORT: "5432"
   POSTGRES_DATABASE: backstage
+  # Must match the PostgreSQL role created for the managed identity.
+  POSTGRES_USER: id-bc-test-backstage
   MICROSOFT_TENANT_ID: 9c8d7196-e4cf-4c75-9312-3b2fc26f41e6
   AZURE_CLIENT_ID: 0557ac87-7409-4cc4-a80a-c7415be47f06
   AZURE_TENANT_ID: 9c8d7196-e4cf-4c75-9312-3b2fc26f41e6
@@ -62,7 +64,7 @@ secrets:
 keyVaultCSI:
   enabled: true
   secretProviderClassName: backstage-kv-secrets
-  clientId: 1822f123-21ac-48d6-a640-b44edc240617 #0557ac87-7409-4cc4-a80a-c7415be47f06 - this is the value for the service account. removed for testing with app reg
+  clientId: 0557ac87-7409-4cc4-a80a-c7415be47f06
   keyVaultName: kvbctest3psbcg
   tenantId: 9c8d7196-e4cf-4c75-9312-3b2fc26f41e6
   secretObjects:

@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pg-debug
+  labels:
+    azure.workload.identity/use: "true"
+spec:
+  serviceAccountName: backstage-sa
+  containers:
+    - name: azcli
+      image: mcr.microsoft.com/azure-cli:2.61.0
+      command: ["/bin/bash"]
+      args: ["-c", "sleep infinity"]
+      env:
+        - name: PGHOST
+          value: "psql-bc-test.postgres.database.azure.com"
+        - name: PGPORT
+          value: "5432"
+        - name: PGUSER
+          value: "id-bc-test-backstage"
+        - name: PGDATABASE
+          value: "backstage"
+        - name: PGSSLMODE
+          value: "require"

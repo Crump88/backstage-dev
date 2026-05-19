@@ -20,14 +20,24 @@ backend:
 
   # config options: https://node-postgres.com/apis/client
   database:
-    client: better-sqlite3
-    connection: ':memory:'
-    # client: pg
-    # connection:
-    #   host: ${POSTGRES_HOST}
-    #   port: ${POSTGRES_PORT}
-    #   user: ${AZURE_CLIENT_ID}@${POSTGRES_SERVER_NAME}
-    # type: azure
+    # client: better-sqlite3
+    # connection: ':memory:' # These 2 lines are to use in-memory sqlite. Its good for testing before integrating with postgres to ensure the app comes up and is functional. All data is lost on restart.
+    client: pg
+    pluginDivisionMode: schema
+    ensureExists: false
+    ensureSchemaExists: true
+    connection:
+      type: azure
+      tokenCredential:
+        tokenRenewableOffsetTime: 5 minutes
+        clientId: ${AZURE_CLIENT_ID}
+      host: ${POSTGRES_HOST}
+      port: ${POSTGRES_PORT}
+      database: ${POSTGRES_DATABASE}
+      user: ${POSTGRES_USER}
+      ssl:
+        rejectUnauthorized: true
+    
       # https://node-postgres.com/features/ssl
       # you can set the sslmode configuration option via the `PGSSLMODE` environment variable
       # see https://www.postgresql.org/docs/current/libpq-ssl.html Table 33.1. SSL Mode Descriptions (e.g. require)
