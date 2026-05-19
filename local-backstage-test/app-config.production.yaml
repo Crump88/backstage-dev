@@ -20,12 +20,14 @@ backend:
 
   # config options: https://node-postgres.com/apis/client
   database:
-    client: pg
-    connection:
-      host: ${POSTGRES_HOST}
-      port: ${POSTGRES_PORT}
-      user: ${POSTGRES_USER}
-    type: azure
+    client: better-sqlite3
+    connection: ':memory:'
+    # client: pg
+    # connection:
+    #   host: ${POSTGRES_HOST}
+    #   port: ${POSTGRES_PORT}
+    #   user: ${AZURE_CLIENT_ID}@${POSTGRES_SERVER_NAME}
+    # type: azure
       # https://node-postgres.com/features/ssl
       # you can set the sslmode configuration option via the `PGSSLMODE` environment variable
       # see https://www.postgresql.org/docs/current/libpq-ssl.html Table 33.1. SSL Mode Descriptions (e.g. require)
@@ -55,13 +57,14 @@ catalog:
     microsoftGraphOrg:
       default:
         tenantId: ${MICROSOFT_TENANT_ID}
+        clientId: ${MICROSOFT_CLIENT_ID}
+        clientSecret: ${MICROSOFT_CLIENT_SECRET}
         user:
           filter: id eq '945052cb-1dbb-4821-8a6a-93a4db3e0e5a'
         group:
           filter: >
             securityEnabled eq false
             and mailEnabled eq true
-            and groupTypes/any(c:c+eq+'Unified')
         schedule:
           frequency: PT1H
           timeout: PT50M

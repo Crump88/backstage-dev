@@ -1,0 +1,37 @@
+# Development-specific configuration overrides
+# Used locally when running: yarn dev
+
+app:
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  cors:
+    origin: http://localhost:3000
+
+database:
+  client: pg
+  connection:
+    host: bc-backstage-psql.postgres.database.azure.com
+    port: 5432
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    ssl:
+      rejectUnauthorized: true
+
+auth:
+  environment: development
+  providers:
+    microsoft:
+      development:
+        clientId: 1822f123-21ac-48d6-a640-b44edc240617
+        clientSecret: ${AZURE_CLIENT_SECRET}
+        tenantId: 9c8d7196-e4cf-4c75-9312-3b2fc26f41e6
+        domainHint: 9c8d7196-e4cf-4c75-9312-3b2fc26f41e6
+        signIn:
+          resolvers:
+            - resolver: userIdMatchingUserEntityAnnotation
+            - resolver: emailMatchingUserEntityProfileEmail
+    guest: {}

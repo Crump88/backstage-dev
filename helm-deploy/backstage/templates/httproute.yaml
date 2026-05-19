@@ -1,0 +1,27 @@
+{{- if .Values.gatewayApi.enabled }}
+{{- $appBaseUrl := required "Set config.APP_BASE_URL to generate HTTPRoute hostnames." .Values.config.APP_BASE_URL }}
+{{- $host := regexReplaceAll "^https?://([^/:]+).*$" $appBaseUrl "${1}" }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "backstage.fullname" . }}
+  labels:
+    {{- include "backstage.labels" . | nindent 4 }}
+spec:
+  parentRefs:
+    - name: {{ required "Set gatewayApi.gatewayName." .Values.gatewayApi.gatewayName }}
+      namespace: {{ required "Set gatewayApi.gatewayNamespace." .Values.gatewayApi.gatewayNamespace }}
+      {{- with .Values.gatewayApi.sectionName }}
+      sectionName: {{ . }}
+      {{- end }}
+  hostnames:
+    - {{ $host | quote }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: {{ default "/" .Values.gatewayApi.pathPrefix | quote }}
+      backendRefs:
+        - name: {{ include "backstage.fullname" . }}
+          port: {{ .Values.service.port }}
+{{- end }}

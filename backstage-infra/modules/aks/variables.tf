@@ -60,6 +60,11 @@ variable "subnet_id" {
   type = string
 }
 
+variable "kv_secret_rotation_enabled" {
+  type    = bool
+  default = true
+}
+
 variable "enable_ingress_application_gateway" {
   type    = bool
   default = false

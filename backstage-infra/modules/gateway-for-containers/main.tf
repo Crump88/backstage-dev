@@ -1,5 +1,3 @@
-data "azurerm_subscription" "current" {}
-
 resource "azurerm_user_assigned_identity" "alb_controller" {
   count = var.enable ? 1 : 0
 
@@ -38,9 +36,9 @@ resource "azurerm_role_assignment" "alb_controller_reader_node_rg" {
 resource "azurerm_role_assignment" "alb_controller_config_manager_node_rg" {
   count = var.enable ? 1 : 0
 
-  scope = var.aks_node_resource_group_id
-  role_definition_id = "${data.azurerm_subscription.current.id}/providers/Microsoft.Authorization/roleDefinitions/fbc52c3f-28ad-4303-a892-8a056630b8f1"
-  principal_id       = azurerm_user_assigned_identity.alb_controller[0].principal_id
+  scope                = var.aks_node_resource_group_id
+  role_definition_name = "AppGw for Containers Configuration Manager"
+  principal_id         = azurerm_user_assigned_identity.alb_controller[0].principal_id
 }
 
 resource "azurerm_role_assignment" "alb_controller_network_contributor_subnet" {

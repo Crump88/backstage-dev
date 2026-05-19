@@ -1,4 +1,4 @@
-# Key Learnings
+# Backstage Key Learnings
 
 ## Setting up authentication
 
@@ -27,7 +27,17 @@ backend.add(import('@backstage/plugin-catalog-backend-module-msgraph'));
 
 ## Adding plugins
 
-- No key learnings captured yet.
+- I implemeneted Github integrations specifically for creating Software templates to tokenize a repository.
+  - Double check permissions. Github/Backstage has a manifest that can be used to create a Github App, but the permissions were wrong (wasn't able to create repository, read commits, etc)
+  - I set the permissions on my Github App to:
+    - Repo Permissions:
+      - Administration: Read and Write
+      - Checks: Read-Only
+      - Commit Statuses: Read-Only
+      - Contents: Read and Write
+      - Metadata: Mandatory Read-Only
+    - Org Permissions:
+      - Members: Read-Only
 
 ## Customizing Your App's UI
 
@@ -36,3 +46,17 @@ backend.add(import('@backstage/plugin-catalog-backend-module-msgraph'));
 ## Populating the homepage
 
 - No key learnings captured yet.
+
+# Infrastructure Key Learnings
+
+## AKS Setup
+
+We've proposed using Azure Gateway For Containers to manage Ingress via the Gateway API
+- This feature is both GA and Public Preview (as it has a breadth of services)
+- Getting it configured through Terraform has been tricky as the preview features are not yet available as attributes. I had to deploy the cluster, then execute AZ CLI commands.
+- This document is a good starting point once the cluster is deployed. [Deploy Application Gateway for Containers](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-addon?tabs=azure-cli%2Cazure-cli2)
+  - To start, ensure you've added both the extensions (alb and aks-preview) and the additional features (ManagedGatewayAPIPreview and ApplicationLoadBalancerPreview)
+  - Then update the aks cluster through the cli with `az aks create --resource-group $RESOURCE_GROUP --name $AKS_NAME --enable-gateway-api --enable-application-load-balancer`
+- I next ran into an issue with permissions on the service account / managed identity. The terraform module created an identity, but AKS created its own it appears.
+  - so far - i've manually updated the permissions so that the aks generated service principal (will be in the "MC-" resource group) named `applicationloadbalancer-<aks_cluster_name>` has `network contributor` over the subnet created for gateway for containers by terraform.
+- If this is private only, Azure Gateway For Containers does not support [Private IPs](https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/application-gateway-for-containers-components#application-gateway-for-containers-frontends)

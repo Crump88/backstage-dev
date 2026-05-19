@@ -1,6 +1,8 @@
 # ALB-managed Gateway Chart
 
-This chart deploys an `ApplicationLoadBalancer` custom resource for Azure Application Gateway for Containers in managed-by-ALB mode.
+This chart deploys both:
+- an `ApplicationLoadBalancer` custom resource for Azure Application Gateway for Containers in managed-by-ALB mode
+- a Gateway API `Gateway` resource in the same infrastructure namespace
 
 ## Prerequisites
 
@@ -23,6 +25,8 @@ Set at minimum:
 - `alb.associationSubnetId`: from Terraform output `gateway_for_containers_subnet_id`
 - `alb.infrastructureNamespace`: namespace to hold ALB infra custom resource
 - `alb.name`: ApplicationLoadBalancer resource name
+- `gateway.name`: Gateway resource name
+- `gateway.className`: GatewayClass name (default `azure-alb-external`)
 
 ## Install
 
@@ -39,6 +43,8 @@ helm upgrade --install alb-managed-gateway ./helm-deploy/alb-managed-gateway \
 ```bash
 kubectl get applicationloadbalancer -n alb-infra
 kubectl get applicationloadbalancer <alb-name> -n alb-infra -o yaml
+kubectl get gateway -n alb-infra
+kubectl get gateway <gateway-name> -n alb-infra -o yaml
 ```
 
 When provisioning succeeds, the ALB custom resource status will include accepted and deployment-ready conditions.

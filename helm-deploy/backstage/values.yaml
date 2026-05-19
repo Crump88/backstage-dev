@@ -2,34 +2,45 @@ replicaCount: 2
 
 image:
   repository: acrbctesto95qnm.azurecr.io/backstage
-  tag: latest
+  tag: no-postgres
   pullPolicy: IfNotPresent
 
 nameOverride: ""
 fullnameOverride: ""
 
+namespace:
+  create: true
+  name: backstage
+  
 serviceAccount:
   create: true
   name: backstage-sa
   annotations:
-    azure.workload.identity/client-id: 0557ac87-7409-4cc4-a80a-c7415be47f06
+    azure.workload.identity/client-id: 1822f123-21ac-48d6-a640-b44edc240617 #0557ac87-7409-4cc4-a80a-c7415be47f06 - this is the value for the service account. removed for testing with app reg
 
 podLabels:
   azure.workload.identity/use: "true"
 
 service:
   type: ClusterIP
+  annotations: {}
   port: 80
   targetPort: 7007
 
+gatewayApi:
+  enabled: true
+  gatewayName: backstage-gateway
+  gatewayNamespace: alb-infra
+  sectionName: http
+  pathPrefix: /
+
 config:
   NODE_ENV: production
-  APP_BASE_URL: http://backstage.example.com
-  BACKEND_BASE_URL: http://backstage.example.com
-  CORS_ORIGIN: http://backstage.example.com
+  APP_BASE_URL: http://esd2gvbbajheg6ee.fz59.alb.azure.com
+  BACKEND_BASE_URL: http://esd2gvbbajheg6ee.fz59.alb.azure.com
+  CORS_ORIGIN: http://esd2gvbbajheg6ee.fz59.alb.azure.com
   POSTGRES_HOST: psql-bc-test.postgres.database.azure.com
   POSTGRES_PORT: "5432"
-  POSTGRES_USER: REPLACE_WITH_POSTGRES_USERNAME
   POSTGRES_DATABASE: backstage
   MICROSOFT_TENANT_ID: 9c8d7196-e4cf-4c75-9312-3b2fc26f41e6
   AZURE_CLIENT_ID: 0557ac87-7409-4cc4-a80a-c7415be47f06
@@ -49,10 +60,10 @@ secrets:
     BACKEND_SECRET: ""
 
 keyVaultCSI:
-  enabled: false
+  enabled: true
   secretProviderClassName: backstage-kv-secrets
-  clientId: 0557ac87-7409-4cc4-a80a-c7415be47f06
-  keyVaultName: REPLACE_WITH_KEY_VAULT_NAME
+  clientId: 1822f123-21ac-48d6-a640-b44edc240617 #0557ac87-7409-4cc4-a80a-c7415be47f06 - this is the value for the service account. removed for testing with app reg
+  keyVaultName: kvbctest3psbcg
   tenantId: 9c8d7196-e4cf-4c75-9312-3b2fc26f41e6
   secretObjects:
     - key: MICROSOFT_CLIENT_ID
@@ -79,11 +90,11 @@ resources:
     memory: 2Gi
 
 readinessProbe:
-  path: /api/catalog/entities
+  path: /.backstage/health/v1/readiness
   initialDelaySeconds: 20
   periodSeconds: 10
 
 livenessProbe:
-  path: /api/catalog/entities
+  path: /.backstage/health/v1/liveness
   initialDelaySeconds: 45
   periodSeconds: 20

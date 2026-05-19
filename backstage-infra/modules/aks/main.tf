@@ -47,6 +47,10 @@ resource "azurerm_kubernetes_cluster" "this" {
     outbound_type     = var.outbound_type
   }
 
+  key_vault_secrets_provider {
+    secret_rotation_enabled = var.kv_secret_rotation_enabled
+  }
+
   dynamic "ingress_application_gateway" {
     for_each = var.enable_ingress_application_gateway ? [1] : []
 
