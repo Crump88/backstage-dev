@@ -1,0 +1,10 @@
+apiVersion: v2
+name: cert-manager-deployment
+description: Wrapper chart that installs cert-manager into a dedicated namespace
+type: application
+version: 0.1.0
+appVersion: "1.18.2"
+dependencies:
+  - name: cert-manager
+    version: 1.18.2
+    repository: https://charts.jetstack.io

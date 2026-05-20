@@ -1,0 +1,10 @@
+namespace:
+  name: cert-manager
+  create: true
+
+cert-manager:
+  installCRDs: true
+  # Keep cert-manager highly available if desired.
+  replicaCount: 1
+  prometheus:
+    enabled: false
