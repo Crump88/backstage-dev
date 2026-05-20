@@ -58,7 +58,10 @@ backend.add(import('@backstage/plugin-catalog-backend-module-msgraph'));
       - Metadata: Mandatory Read-Only
     - Org Permissions:
       - Members: Read-Only
-
+- Once I containerized Backstage, I ran into additional issues with this integration, specifically the private key.
+  - You have to ensure that you remove Carriage Returns or literal backslash-n sequences.
+  - You also need to ensure that they secret is uploaded to keyvault with a content type of `application/x-pem-file`
+  
 ## Customizing Your App's UI
 
 - No key learnings captured yet.

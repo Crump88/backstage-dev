@@ -2,7 +2,7 @@ replicaCount: 2
 
 image:
   repository: acrbctesto95qnm.azurecr.io/backstage
-  tag: latest
+  tag: clientid
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -36,9 +36,9 @@ gatewayApi:
 
 config:
   NODE_ENV: production
-  APP_BASE_URL: https://esd2gvbbajheg6ee.fz59.alb.azure.com
-  BACKEND_BASE_URL: https://esd2gvbbajheg6ee.fz59.alb.azure.com
-  CORS_ORIGIN: https://esd2gvbbajheg6ee.fz59.alb.azure.com
+  APP_BASE_URL: http://localhost:7007
+  BACKEND_BASE_URL: http://localhost:7007
+  CORS_ORIGIN: http://localhost:7007
   POSTGRES_HOST: psql-bc-test.postgres.database.azure.com
   POSTGRES_PORT: "5432"
   POSTGRES_DATABASE: backstage
